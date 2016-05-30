@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Boxpacker by dvdoug</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Boxpacker</h1>
+        <h2>3D bin packing / knapsack problem solver</h2>
+        <a href="https://github.com/dvdoug/BoxPacker" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="boxpacker" class="anchor" href="#boxpacker" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BoxPacker</h1>
+
+<p>An implementation of the 3D bin packing/knapsack problem i.e. given a list of items, how many boxes do you need to fit
+them all in.</p>
+
+<p>Especially useful for e.g. e-commerce contexts when you need to know box size/weight to calculate shipping costs.</p>
+
+<p><a href="https://travis-ci.org/dvdoug/BoxPacker"><img src="https://travis-ci.org/dvdoug/BoxPacker.svg?branch=master" alt="Build Status"></a>
+<a href="https://scrutinizer-ci.com/g/dvdoug/BoxPacker/?branch=master"><img src="https://scrutinizer-ci.com/g/dvdoug/BoxPacker/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
+<a href="https://packagist.org/packages/dvdoug/boxpacker"><img src="https://img.shields.io/packagist/dt/dvdoug/boxpacker.svg" alt="Download count"></a>
+<a href="https://packagist.org/packages/dvdoug/boxpacker"><img src="https://img.shields.io/packagist/v/dvdoug/boxpacker.svg" alt="Download count"></a></p>
+
+<p><a href="http://en.wikipedia.org/wiki/Bin_packing_problem">Wikipedia</a> says this is NP-hard, and there is no way to always
+achieve an optimum solution without running through every single permutation. But that's OK because this implementation
+is designed to simulate a naive human approach to the problem rather than search for the "perfect" solution.</p>
+
+<p>This is for 2 reasons:</p>
+
+<ol>
+<li>It's quicker</li>
+<li>It doesn't require the person actually packing the box to be given a 3D diagram
+explaining just how the items are supposed to fit.</li>
+</ol>
+
+<h2>
+<a id="principles" class="anchor" href="#principles" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Principles</h2>
+
+<ul>
+<li>Pack largest (by volume) items first</li>
+<li>Pack vertically up the side of the box</li>
+<li>Pack side-by-side where item under consideration fits alongside the previous item</li>
+<li>Only very small overhangs are allowed (10%) to prevent items bending in transit</li>
+<li>The available width/height for each layer will therefore decrease as the stack of items gets taller</li>
+<li>If more than 1 box is needed to accommodate all of the items, then aim for boxes of roughly equal weight
+(e.g. 3 medium size/weight boxes are better than 1 small light box and 2 that are large and heavy)</li>
+</ul>
+
+<h2>
+<a id="constraints" class="anchor" href="#constraints" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Constraints</h2>
+
+<ul>
+<li>Items are assumed to be shipped flat (e.g. books, fragile items). The algorithm as implemented therefore considers
+simple 2D rotation of items when determining fit but will not try turning items on their side</li>
+<li>The algorithm does consider spatial constraints in all 3 dimensions, plus consideration of weight</li>
+</ul>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>If you use <a href="http://getcomposer.org/">Composer</a>, just add <code>dvdoug/boxpacker</code> to your project's <code>composer.json</code> file:</p>
+
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>require<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>dvdoug/boxpacker<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^1.5<span class="pl-pds">"</span></span>
+        }
+    }</pre></div>
+
+<p>Otherwise, the library is PSR-4 compliant, so will work with the autoloader of your choice.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>BoxPacker is designed to integrate as seamlessly as possible into your existing systems. To use the library, you will
+need to implement the <code>BoxPacker\Item</code> interface on your item/product objects and <code>BoxPacker\Box</code> on the objects you use to to represent a box.
+These interfaces are quite minimal, but provide a standardised way for the packing process to obtain the dimensional information it needs in order to work.</p>
+
+<p>Basic usage then looks something like the below:
+(although you'd probably want to do something more useful with the results than just output to the screen, and your dimensional data would hopefully come from a database!)</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-c">/*</span></span>
+<span class="pl-s1"><span class="pl-c">   * To figure out which boxes you need, and which items go into which box</span></span>
+<span class="pl-s1"><span class="pl-c">   */</span></span>
+<span class="pl-s1">  <span class="pl-smi">$packer</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Packer</span>();</span>
+<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addBox(<span class="pl-k">new</span> <span class="pl-c1">TestBox</span>(<span class="pl-s"><span class="pl-pds">'</span>Le petite box<span class="pl-pds">'</span></span>, <span class="pl-c1">300</span>, <span class="pl-c1">300</span>, <span class="pl-c1">10</span>, <span class="pl-c1">10</span>, <span class="pl-c1">296</span>, <span class="pl-c1">296</span>, <span class="pl-c1">8</span>, <span class="pl-c1">1000</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addBox(<span class="pl-k">new</span> <span class="pl-c1">TestBox</span>(<span class="pl-s"><span class="pl-pds">'</span>Le grande box<span class="pl-pds">'</span></span>, <span class="pl-c1">3000</span>, <span class="pl-c1">3000</span>, <span class="pl-c1">100</span>, <span class="pl-c1">100</span>, <span class="pl-c1">2960</span>, <span class="pl-c1">2960</span>, <span class="pl-c1">80</span>, <span class="pl-c1">10000</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addItem(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 1<span class="pl-pds">'</span></span>, <span class="pl-c1">250</span>, <span class="pl-c1">250</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addItem(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 2<span class="pl-pds">'</span></span>, <span class="pl-c1">250</span>, <span class="pl-c1">250</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addItem(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 3<span class="pl-pds">'</span></span>, <span class="pl-c1">250</span>, <span class="pl-c1">250</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$packedBoxes</span> <span class="pl-k">=</span> <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>pack();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-c1">echo</span>(<span class="pl-s"><span class="pl-pds">"</span>These items fitted into <span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">count</span>(<span class="pl-smi">$packedBoxes</span>) <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span> box(es)<span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>);</span>
+<span class="pl-s1">  <span class="pl-k">foreach</span> (<span class="pl-smi">$packedBoxes</span> <span class="pl-k">as</span> <span class="pl-smi">$packedBox</span>) {</span>
+<span class="pl-s1">    <span class="pl-smi">$boxType</span> <span class="pl-k">=</span> <span class="pl-smi">$packedBox</span><span class="pl-k">-&gt;</span>getBox(); <span class="pl-c">// your own box object, in this case TestBox</span></span>
+<span class="pl-s1">    <span class="pl-c1">echo</span>(<span class="pl-s"><span class="pl-pds">"</span>This box is a {<span class="pl-smi">$boxType</span><span class="pl-k">-&gt;</span>getReference()}, it is {<span class="pl-smi">$boxType</span><span class="pl-k">-&gt;</span>getOuterWidth()}mm wide, {<span class="pl-smi">$boxType</span><span class="pl-k">-&gt;</span>getOuterLength()}mm long and {<span class="pl-smi">$boxType</span><span class="pl-k">-&gt;</span>getOuterDepth()}mm high<span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>);</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span>(<span class="pl-s"><span class="pl-pds">"</span>The combined weight of this box and the items inside it is {<span class="pl-smi">$packedBox</span><span class="pl-k">-&gt;</span>getWeight()}g<span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c1">echo</span>(<span class="pl-s"><span class="pl-pds">"</span>The items in this box are:<span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>);</span>
+<span class="pl-s1">    <span class="pl-smi">$itemsInTheBox</span> <span class="pl-k">=</span> <span class="pl-smi">$packedBox</span><span class="pl-k">-&gt;</span>getItems();</span>
+<span class="pl-s1">    <span class="pl-k">foreach</span> (<span class="pl-smi">$itemsInTheBox</span> <span class="pl-k">as</span> <span class="pl-smi">$item</span>) { <span class="pl-c">// your own item object, in this case TestItem</span></span>
+<span class="pl-s1">      <span class="pl-c1">echo</span>(<span class="pl-smi">$item</span><span class="pl-k">-&gt;</span>getDescription() <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>);</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c1">echo</span>(<span class="pl-c1">PHP_EOL</span>);</span>
+<span class="pl-s1">  }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-c">/*</span></span>
+<span class="pl-s1"><span class="pl-c">   * To just see if a selection of items will fit into one specific box</span></span>
+<span class="pl-s1"><span class="pl-c">   */</span></span>
+<span class="pl-s1">  <span class="pl-smi">$box</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TestBox</span>(<span class="pl-s"><span class="pl-pds">'</span>Le box<span class="pl-pds">'</span></span>, <span class="pl-c1">300</span>, <span class="pl-c1">300</span>, <span class="pl-c1">10</span>, <span class="pl-c1">10</span>, <span class="pl-c1">296</span>, <span class="pl-c1">296</span>, <span class="pl-c1">8</span>, <span class="pl-c1">1000</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-smi">$items</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ItemList</span>();</span>
+<span class="pl-s1">  <span class="pl-smi">$items</span><span class="pl-k">-&gt;</span>insert(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 1<span class="pl-pds">'</span></span>, <span class="pl-c1">297</span>, <span class="pl-c1">296</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$items</span><span class="pl-k">-&gt;</span>insert(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 2<span class="pl-pds">'</span></span>, <span class="pl-c1">297</span>, <span class="pl-c1">296</span>, <span class="pl-c1">2</span>, <span class="pl-c1">500</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$items</span><span class="pl-k">-&gt;</span>insert(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 3<span class="pl-pds">'</span></span>, <span class="pl-c1">296</span>, <span class="pl-c1">296</span>, <span class="pl-c1">4</span>, <span class="pl-c1">290</span>));</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-smi">$packer</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Packer</span>();</span>
+<span class="pl-s1">  <span class="pl-smi">$packedBox</span> <span class="pl-k">=</span> <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>packIntoBox(<span class="pl-smi">$box</span>, <span class="pl-smi">$items</span>);</span>
+<span class="pl-s1">  <span class="pl-c">/* $packedBox-&gt;getItems() contains the items that fit */</span></span></pre></div>
+
+<p>BoxPacker is designed to run calculations as efficiently as possible, the 4500+ tests in the test suite run in 11.9
+seconds in the Ubuntu VM on my workstation, giving a rate of approx ≈385 solutions/second which should be more than sufficient for
+most e-commerce stores :) If you do wish to benchmark the library to evaluate performance in your own scenarios, please
+disable Xdebug when doing so - in my experience the unit tests take 4.5x longer (11.9sec-&gt;54 sec) when Xdebug is loaded.</p>
+
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li>PHP version 5.4 or higher (including PHP7 and HHVM)</li>
+</ul>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>BoxPacker is MIT-licensed. </p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/dvdoug/BoxPacker/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/dvdoug/BoxPacker/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/dvdoug/BoxPacker"></a> is maintained by <a href="https://github.com/dvdoug">dvdoug</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
