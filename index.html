@@ -67,22 +67,13 @@ explaining just how the items are supposed to fit.</li>
 </ul>
 
 <h2>
-<a id="constraints" class="anchor" href="#constraints" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Constraints</h2>
-
-<ul>
-<li>Items are assumed to be shipped flat (e.g. books, fragile items). The algorithm as implemented therefore considers
-simple 2D rotation of items when determining fit but will not try turning items on their side</li>
-<li>The algorithm does consider spatial constraints in all 3 dimensions, plus consideration of weight</li>
-</ul>
-
-<h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
 <p>If you use <a href="http://getcomposer.org/">Composer</a>, just add <code>dvdoug/boxpacker</code> to your project's <code>composer.json</code> file:</p>
 
 <div class="highlight highlight-source-json"><pre>    {
         <span class="pl-s"><span class="pl-pds">"</span>require<span class="pl-pds">"</span></span>: {
-            <span class="pl-s"><span class="pl-pds">"</span>dvdoug/boxpacker<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^1.5<span class="pl-pds">"</span></span>
+            <span class="pl-s"><span class="pl-pds">"</span>dvdoug/boxpacker<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^2.0<span class="pl-pds">"</span></span>
         }
     }</pre></div>
 
@@ -105,9 +96,9 @@ These interfaces are quite minimal, but provide a standardised way for the packi
 <span class="pl-s1">  <span class="pl-smi">$packer</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Packer</span>();</span>
 <span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addBox(<span class="pl-k">new</span> <span class="pl-c1">TestBox</span>(<span class="pl-s"><span class="pl-pds">'</span>Le petite box<span class="pl-pds">'</span></span>, <span class="pl-c1">300</span>, <span class="pl-c1">300</span>, <span class="pl-c1">10</span>, <span class="pl-c1">10</span>, <span class="pl-c1">296</span>, <span class="pl-c1">296</span>, <span class="pl-c1">8</span>, <span class="pl-c1">1000</span>));</span>
 <span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addBox(<span class="pl-k">new</span> <span class="pl-c1">TestBox</span>(<span class="pl-s"><span class="pl-pds">'</span>Le grande box<span class="pl-pds">'</span></span>, <span class="pl-c1">3000</span>, <span class="pl-c1">3000</span>, <span class="pl-c1">100</span>, <span class="pl-c1">100</span>, <span class="pl-c1">2960</span>, <span class="pl-c1">2960</span>, <span class="pl-c1">80</span>, <span class="pl-c1">10000</span>));</span>
-<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addItem(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 1<span class="pl-pds">'</span></span>, <span class="pl-c1">250</span>, <span class="pl-c1">250</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>));</span>
-<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addItem(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 2<span class="pl-pds">'</span></span>, <span class="pl-c1">250</span>, <span class="pl-c1">250</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>));</span>
-<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addItem(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 3<span class="pl-pds">'</span></span>, <span class="pl-c1">250</span>, <span class="pl-c1">250</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addItem(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 1<span class="pl-pds">'</span></span>, <span class="pl-c1">250</span>, <span class="pl-c1">250</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>, <span class="pl-c1">true</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addItem(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 2<span class="pl-pds">'</span></span>, <span class="pl-c1">250</span>, <span class="pl-c1">250</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>, <span class="pl-c1">true</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>addItem(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 3<span class="pl-pds">'</span></span>, <span class="pl-c1">250</span>, <span class="pl-c1">250</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>, <span class="pl-c1">true</span>));</span>
 <span class="pl-s1">  <span class="pl-smi">$packedBoxes</span> <span class="pl-k">=</span> <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>pack();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">  <span class="pl-c1">echo</span>(<span class="pl-s"><span class="pl-pds">"</span>These items fitted into <span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">count</span>(<span class="pl-smi">$packedBoxes</span>) <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span> box(es)<span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>);</span>
@@ -133,16 +124,16 @@ These interfaces are quite minimal, but provide a standardised way for the packi
 <span class="pl-s1">  <span class="pl-smi">$box</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TestBox</span>(<span class="pl-s"><span class="pl-pds">'</span>Le box<span class="pl-pds">'</span></span>, <span class="pl-c1">300</span>, <span class="pl-c1">300</span>, <span class="pl-c1">10</span>, <span class="pl-c1">10</span>, <span class="pl-c1">296</span>, <span class="pl-c1">296</span>, <span class="pl-c1">8</span>, <span class="pl-c1">1000</span>);</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">  <span class="pl-smi">$items</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ItemList</span>();</span>
-<span class="pl-s1">  <span class="pl-smi">$items</span><span class="pl-k">-&gt;</span>insert(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 1<span class="pl-pds">'</span></span>, <span class="pl-c1">297</span>, <span class="pl-c1">296</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>));</span>
-<span class="pl-s1">  <span class="pl-smi">$items</span><span class="pl-k">-&gt;</span>insert(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 2<span class="pl-pds">'</span></span>, <span class="pl-c1">297</span>, <span class="pl-c1">296</span>, <span class="pl-c1">2</span>, <span class="pl-c1">500</span>));</span>
-<span class="pl-s1">  <span class="pl-smi">$items</span><span class="pl-k">-&gt;</span>insert(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 3<span class="pl-pds">'</span></span>, <span class="pl-c1">296</span>, <span class="pl-c1">296</span>, <span class="pl-c1">4</span>, <span class="pl-c1">290</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$items</span><span class="pl-k">-&gt;</span>insert(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 1<span class="pl-pds">'</span></span>, <span class="pl-c1">297</span>, <span class="pl-c1">296</span>, <span class="pl-c1">2</span>, <span class="pl-c1">200</span>, <span class="pl-c1">true</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$items</span><span class="pl-k">-&gt;</span>insert(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 2<span class="pl-pds">'</span></span>, <span class="pl-c1">297</span>, <span class="pl-c1">296</span>, <span class="pl-c1">2</span>, <span class="pl-c1">500</span>, <span class="pl-c1">true</span>));</span>
+<span class="pl-s1">  <span class="pl-smi">$items</span><span class="pl-k">-&gt;</span>insert(<span class="pl-k">new</span> <span class="pl-c1">TestItem</span>(<span class="pl-s"><span class="pl-pds">'</span>Item 3<span class="pl-pds">'</span></span>, <span class="pl-c1">296</span>, <span class="pl-c1">296</span>, <span class="pl-c1">4</span>, <span class="pl-c1">290</span>, <span class="pl-c1">true</span>));</span>
 <span class="pl-s1"></span>
-<span class="pl-s1">  <span class="pl-smi">$packer</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Packer</span>();</span>
-<span class="pl-s1">  <span class="pl-smi">$packedBox</span> <span class="pl-k">=</span> <span class="pl-smi">$packer</span><span class="pl-k">-&gt;</span>packIntoBox(<span class="pl-smi">$box</span>, <span class="pl-smi">$items</span>);</span>
+<span class="pl-s1">  <span class="pl-smi">$volumePacker</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">VolumePacker</span>(<span class="pl-smi">$box</span>, <span class="pl-smi">$items</span>);</span>
+<span class="pl-s1">  <span class="pl-smi">$packedBox</span> <span class="pl-k">=</span> <span class="pl-smi">$volumePacker</span><span class="pl-k">-&gt;</span>pack();</span>
 <span class="pl-s1">  <span class="pl-c">/* $packedBox-&gt;getItems() contains the items that fit */</span></span></pre></div>
 
-<p>BoxPacker is designed to run calculations as efficiently as possible, the 4500+ tests in the test suite run in 11.9
-seconds in the Ubuntu VM on my workstation, giving a rate of approx ≈385 solutions/second which should be more than sufficient for
+<p>BoxPacker is designed to run calculations as efficiently as possible, the 4500+ tests in the test suite run in 13
+seconds in the Ubuntu VM on my workstation, giving a rate of 350+ solutions/second which should be more than sufficient for
 most e-commerce stores :) If you do wish to benchmark the library to evaluate performance in your own scenarios, please
 disable Xdebug when doing so - in my experience the unit tests take 4.5x longer (11.9sec-&gt;54 sec) when Xdebug is loaded.</p>
 
