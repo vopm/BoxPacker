@@ -139,9 +139,6 @@ class PackerTest extends \PHPUnit_Framework_TestCase
         self::assertEquals(2100, $packedBoxes->top()->getWeight());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testPackThreeItemsOneDoesntFitInAnyBox()
     {
 
@@ -150,7 +147,7 @@ class PackerTest extends \PHPUnit_Framework_TestCase
 
         $item1 = new TestItem('Item 1', 2500, 2500, 20, 2000, true);
         $item2 = new TestItem('Item 2', 25000, 2500, 20, 2000, true);
-        $item3 = new TestItem('Item 3', 2500, 2500, 20, 2000, true);
+        $item3 = new TestItem('Item 3', 25000, 2500, 20, 2000, true);
 
         $packer = new Packer();
         $packer->addBox($box1);
@@ -159,11 +156,10 @@ class PackerTest extends \PHPUnit_Framework_TestCase
         $packer->addItem($item2);
         $packer->addItem($item3);
         $packedBoxes = $packer->pack();
+        
+        $this->assertEquals(3, $packedBoxes->count());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testPackWithoutBox()
     {
 
@@ -176,6 +172,8 @@ class PackerTest extends \PHPUnit_Framework_TestCase
         $packer->addItem($item2);
         $packer->addItem($item3);
         $packedBoxes = $packer->pack();
+
+        $this->assertEquals(3, $packedBoxes->count());
     }
 
     public function testIssue1()

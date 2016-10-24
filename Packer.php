@@ -148,7 +148,7 @@ class Packer implements LoggerAwareInterface
             //Check iteration was productive
             if ($packedBoxesIteration->isEmpty()) {
                 /*
-                 * Instead of fail, create a imaginary box to pack this product.
+                 * Instead of failing, create a imaginary box to pack this product.
                  * */
                 $item = $this->items->top();
                 $box = new FitBox($item);
