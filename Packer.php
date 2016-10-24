@@ -150,8 +150,15 @@ class Packer implements LoggerAwareInterface
                 /*
                  * Instead of fail, create a imaginary box to pack this product.
                  * */
-                $this->addBox(new FitBox($this->items->top()));
-                continue;
+                $item = $this->items->top();
+                $box = new FitBox($item);
+                $boxItems = new ItemList();
+                $boxItems->insert($item);
+                $packedBoxesIteration->insert(new PackedBox(
+                    $box,
+                    $boxItems,
+                    0, 0, 0, 0
+                ));
             }
 
             //Find best box of iteration, and remove packed items from unpacked list
